@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${patient.id == 0} ? 'Add Patient' : 'Edit Patient'">Patient Form — MediCare HMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar(activePage='patients')}"></div>
+
+<div class="main-wrapper">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2 th:text="${patient.id == 0} ? 'Add New Patient' : 'Edit Patient'">Patient</h2>
+      <p>Fill in the patient details below</p>
+    </div>
+    <div class="topbar-right">
+      <a th:href="@{/patients}" class="btn topbar-btn btn-ghost">← Back to Patients</a>
+      <a th:href="@{/logout}" class="btn topbar-btn btn-danger-soft">🚪 Logout</a>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <div class="card" style="max-width:700px;margin:0 auto;">
+      <div class="card-header">
+        <span class="card-title"
+              th:text="${patient.id == 0} ? '➕ New Patient Record' : '✏️ Update Patient Record'"></span>
+      </div>
+      <div class="card-body">
+
+        <!-- Add form -->
+        <form th:if="${patient.id == 0}" th:action="@{/patients/add}" method="post">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Full Name *</label>
+              <input type="text" name="name" class="form-control"
+                     placeholder="e.g. Ravi Kumar" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Age *</label>
+              <input type="number" name="age" class="form-control"
+                     placeholder="e.g. 30" min="1" max="150" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gender *</label>
+              <select name="gender" class="form-control" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact Number *</label>
+              <input type="text" name="contact" class="form-control"
+                     placeholder="10-digit mobile" maxlength="10"
+                     pattern="\d{10}" required/>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Address</label>
+              <input type="text" name="address" class="form-control"
+                     placeholder="Full address (optional)"/>
+            </div>
+          </div>
+          <div style="margin-top:24px;display:flex;gap:12px;">
+            <button type="submit" class="btn btn-primary">✅ Add Patient</button>
+            <a th:href="@{/patients}" class="btn btn-outline">Cancel</a>
+          </div>
+        </form>
+
+        <!-- Edit form -->
+        <form th:if="${patient.id != 0}" th:action="@{/patients/edit/{id}(id=${patient.id})}" method="post">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Full Name *</label>
+              <input type="text" name="name" class="form-control"
+                     th:value="${patient.name}" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Age *</label>
+              <input type="number" name="age" class="form-control"
+                     th:value="${patient.age}" min="1" max="150" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gender *</label>
+              <select name="gender" class="form-control" required>
+                <option value="Male"   th:selected="${patient.gender == 'Male'}">Male</option>
+                <option value="Female" th:selected="${patient.gender == 'Female'}">Female</option>
+                <option value="Other"  th:selected="${patient.gender == 'Other'}">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact Number *</label>
+              <input type="text" name="contact" class="form-control"
+                     th:value="${patient.contact}" maxlength="10" required/>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Address</label>
+              <input type="text" name="address" class="form-control"
+                     th:value="${patient.address}"/>
+            </div>
+          </div>
+          <div style="margin-top:24px;display:flex;gap:12px;">
+            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+            <a th:href="@{/patients}" class="btn btn-outline">Cancel</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

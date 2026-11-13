@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Generate Bill — MediCare HMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar(activePage='billing')}"></div>
+
+<div class="main-wrapper">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2>Generate Bill</h2>
+      <p>Create a new billing record for a patient</p>
+    </div>
+    <div class="topbar-right">
+      <a th:href="@{/billing}" class="btn topbar-btn btn-ghost">← Back</a>
+      <a th:href="@{/logout}" class="btn topbar-btn btn-danger-soft">🚪 Logout</a>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <div class="card" style="max-width:600px;margin:0 auto;">
+      <div class="card-header">
+        <span class="card-title">💰 New Bill</span>
+      </div>
+      <div class="card-body">
+        <form th:action="@{/billing/add}" method="post">
+          <div class="form-grid">
+
+            <div class="form-group full">
+              <label class="form-label">Select Patient *</label>
+              <select name="patientId" class="form-control" required>
+                <option value="">-- Choose Patient --</option>
+                <option th:each="p : ${patients}"
+                        th:value="${p.id}"
+                        th:text="${p.name} + ' (ID: ' + ${p.id} + ')'"></option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <label class="form-label">Treatment / Description *</label>
+              <input type="text" name="treatment" class="form-control"
+                     placeholder="e.g. ECG + Consultation, MRI Scan" required/>
+            </div>
+
+            <div class="form-group full">
+              <label class="form-label">Amount (₹) *</label>
+              <input type="number" name="amount" class="form-control"
+                     placeholder="e.g. 1500.00" min="0" step="0.01" required/>
+            </div>
+
+          </div>
+          <div style="margin-top:24px;display:flex;gap:12px;">
+            <button type="submit" class="btn btn-primary">💰 Generate Bill</button>
+            <a th:href="@{/billing}" class="btn btn-outline">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

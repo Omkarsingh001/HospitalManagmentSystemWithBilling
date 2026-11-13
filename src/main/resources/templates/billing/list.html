@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Billing — MediCare HMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar(activePage='billing')}"></div>
+
+<div class="main-wrapper">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2>Billing System</h2>
+      <p>Generate and manage patient bills</p>
+    </div>
+    <div class="topbar-right">
+      <a th:href="@{/logout}" class="btn topbar-btn btn-danger-soft">🚪 Logout</a>
+    </div>
+  </header>
+
+  <main class="page-content">
+
+    <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+
+    <!-- Top row: header + pending revenue -->
+    <div class="page-header">
+      <div>
+        <h2>All Bills</h2>
+        <p th:text="${bills.size()} + ' billing records'"></p>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <div class="summary-box" style="padding:14px 22px;">
+          <div class="summary-label">Pending Revenue</div>
+          <div class="summary-value"
+               th:text="'₹' + ${#numbers.formatDecimal(pendingRevenue, 1, 'COMMA', 2, 'POINT')}">₹0</div>
+        </div>
+        <a th:href="@{/billing/add}" class="btn btn-primary">💰 Generate Bill</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patient</th>
+              <th>Treatment</th>
+              <th>Amount (₹)</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${bills.empty}">
+              <td colspan="7">
+                <div class="empty-state">
+                  <div class="empty-icon">💰</div>
+                  <h3>No bills found</h3>
+                  <p>Generate the first bill</p>
+                </div>
+              </td>
+            </tr>
+            <tr th:each="b : ${bills}">
+              <td class="td-muted" th:text="'#' + ${b.id}"></td>
+              <td><strong th:text="${b.patientName}"></strong></td>
+              <td th:text="${b.treatment}"></td>
+              <td>
+                <strong th:text="'₹' + ${#numbers.formatDecimal(b.amount,1,'COMMA',2,'POINT')}"></strong>
+              </td>
+              <td>
+                <span class="badge"
+                  th:classappend="${b.paymentStatus == 'Paid'} ? 'badge-success' :
+                                  (${b.paymentStatus == 'Cancelled'} ? 'badge-danger' : 'badge-warning')"
+                  th:text="${b.paymentStatus}"></span>
+              </td>
+              <td class="td-muted" th:text="${#strings.abbreviate(b.billDate, 10)}"></td>
+              <td>
+                <div class="action-btns">
+                  <!-- Payment status dropdown -->
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-outline">💳 Payment ▾</button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item"
+                         th:href="@{/billing/status/{id}(id=${b.id}, status='Paid')}">✅ Mark Paid</a>
+                      <a class="dropdown-item"
+                         th:href="@{/billing/status/{id}(id=${b.id}, status='Pending')}">⏳ Mark Pending</a>
+                      <a class="dropdown-item"
+                         th:href="@{/billing/status/{id}(id=${b.id}, status='Cancelled')}">❌ Cancelled</a>
+                    </div>
+                  </div>
+                  <!-- Add cost form (inline) -->
+                  <form th:action="@{/billing/add-cost/{id}(id=${b.id})}" method="post"
+                        style="display:flex;gap:6px;align-items:center;">
+                    <input type="number" name="extra" class="form-control"
+                           style="width:90px;padding:5px 8px;font-size:0.78rem;"
+                           placeholder="+ ₹" min="1" step="0.01"/>
+                    <button type="submit" class="btn btn-sm btn-success">Add</button>
+                  </form>
+                  <!-- View patient bills -->
+                  <a th:href="@{/billing/patient/{id}(id=${b.patientId})}"
+                     class="btn btn-sm btn-primary">📄 Full</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

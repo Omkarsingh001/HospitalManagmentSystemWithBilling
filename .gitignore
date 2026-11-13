@@ -1,0 +1,8 @@
+target/
+**/target/
+.idea/
+application-local.properties
+hospital_db.sql
+.env
+.env.*
+!.env.example

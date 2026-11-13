@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Book Appointment — MediCare HMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar(activePage='appointments')}"></div>
+
+<div class="main-wrapper">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2>Book Appointment</h2>
+      <p>Schedule a new patient appointment</p>
+    </div>
+    <div class="topbar-right">
+      <a th:href="@{/appointments}" class="btn topbar-btn btn-ghost">← Back</a>
+      <a th:href="@{/logout}" class="btn topbar-btn btn-danger-soft">🚪 Logout</a>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <div class="card" style="max-width:700px;margin:0 auto;">
+      <div class="card-header">
+        <span class="card-title">📅 New Appointment</span>
+      </div>
+      <div class="card-body">
+        <form th:action="@{/appointments/add}" method="post">
+          <div class="form-grid">
+
+            <div class="form-group full">
+              <label class="form-label">Select Patient *</label>
+              <select name="patientId" class="form-control" required>
+                <option value="">-- Choose Patient --</option>
+                <option th:each="p : ${patients}"
+                        th:value="${p.id}"
+                        th:text="${p.name} + ' (ID: ' + ${p.id} + ', Age: ' + ${p.age} + ')'"></option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <label class="form-label">Select Doctor *</label>
+              <select name="doctorId" class="form-control" required>
+                <option value="">-- Choose Doctor --</option>
+                <option th:each="d : ${doctors}"
+                        th:value="${d.id}"
+                        th:text="${d.name} + ' — ' + ${d.specialization} + (${d.available} ? '' : ' [Unavailable]')"></option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Appointment Date *</label>
+              <input type="date" name="apptDate" class="form-control" required
+                     th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"/>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Appointment Time *</label>
+              <input type="time" name="apptTime" class="form-control" required/>
+            </div>
+
+            <div class="form-group full">
+              <label class="form-label">Notes (optional)</label>
+              <input type="text" name="notes" class="form-control"
+                     placeholder="Reason for visit, symptoms, etc."/>
+            </div>
+
+          </div>
+          <div style="margin-top:24px;display:flex;gap:12px;">
+            <button type="submit" class="btn btn-primary">✅ Book Appointment</button>
+            <a th:href="@{/appointments}" class="btn btn-outline">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

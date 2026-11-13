@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Appointments — MediCare HMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar(activePage='appointments')}"></div>
+
+<div class="main-wrapper">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2>Appointment System</h2>
+      <p>Book and manage patient appointments</p>
+    </div>
+    <div class="topbar-right">
+      <a th:href="@{/logout}" class="btn topbar-btn btn-danger-soft">🚪 Logout</a>
+    </div>
+  </header>
+
+  <main class="page-content">
+
+    <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+
+    <div class="page-header">
+      <div>
+        <h2>All Appointments</h2>
+        <p th:text="${appointments.size()} + ' appointments total'"></p>
+      </div>
+      <a th:href="@{/appointments/add}" class="btn btn-primary">📅 Book Appointment</a>
+    </div>
+
+    <div class="card">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patient</th>
+              <th>Doctor</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${appointments.empty}">
+              <td colspan="7">
+                <div class="empty-state">
+                  <div class="empty-icon">📅</div>
+                  <h3>No appointments yet</h3>
+                  <p>Book the first appointment</p>
+                </div>
+              </td>
+            </tr>
+            <tr th:each="a : ${appointments}">
+              <td class="td-muted" th:text="'#' + ${a.id}"></td>
+              <td><strong th:text="${a.patientName}"></strong></td>
+              <td class="td-muted" th:text="${a.doctorName}"></td>
+              <td th:text="${a.apptDate}"></td>
+              <td th:text="${a.apptTime}"></td>
+              <td>
+                <span class="badge"
+                  th:classappend="${a.status == 'Completed'} ? 'badge-success' :
+                                  (${a.status == 'Cancelled'} ? 'badge-danger' : 'badge-warning')"
+                  th:text="${a.status}"></span>
+              </td>
+              <td>
+                <div class="action-btns">
+                  <!-- Status dropdown -->
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-outline">🔄 Status ▾</button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item"
+                         th:href="@{/appointments/status/{id}(id=${a.id}, status='Scheduled')}">📋 Scheduled</a>
+                      <a class="dropdown-item"
+                         th:href="@{/appointments/status/{id}(id=${a.id}, status='Completed')}">✅ Completed</a>
+                      <a class="dropdown-item"
+                         th:href="@{/appointments/status/{id}(id=${a.id}, status='Cancelled')}">❌ Cancelled</a>
+                    </div>
+                  </div>
+                  <a th:href="@{/appointments/delete/{id}(id=${a.id})}"
+                     class="btn btn-sm btn-danger"
+                     onclick="return confirm('Cancel this appointment?')">🗑️</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     SIDEBAR FRAGMENT  — included by every page
+     Usage: <div th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}">
+════════════════════════════════════════════════════ -->
+<aside th:fragment="sidebar(activePage)" class="sidebar">
+
+  <!-- Brand -->
+  <div class="sidebar-brand">
+    <div class="logo">
+      <div class="logo-icon">🏥</div>
+      <div class="logo-text">
+        <h1>MediCare HMS</h1>
+        <span>Hospital Management</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="sidebar-nav">
+
+    <div class="nav-section-label">Main</div>
+
+    <div class="nav-item">
+      <a th:href="@{/dashboard}"
+         th:classappend="${activePage == 'dashboard'} ? 'active' : ''"
+         class="nav-link">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+    </div>
+
+    <div class="nav-section-label">Modules</div>
+
+    <div class="nav-item">
+      <a th:href="@{/patients}"
+         th:classappend="${activePage == 'patients'} ? 'active' : ''"
+         class="nav-link">
+        <span class="nav-icon">👤</span>
+        <span>Patients</span>
+      </a>
+    </div>
+
+    <div class="nav-item">
+      <a th:href="@{/doctors}"
+         th:classappend="${activePage == 'doctors'} ? 'active' : ''"
+         class="nav-link">
+        <span class="nav-icon">🩺</span>
+        <span>Doctors</span>
+      </a>
+    </div>
+
+    <div class="nav-item">
+      <a th:href="@{/appointments}"
+         th:classappend="${activePage == 'appointments'} ? 'active' : ''"
+         class="nav-link">
+        <span class="nav-icon">📅</span>
+        <span>Appointments</span>
+      </a>
+    </div>
+
+    <div class="nav-item">
+      <a th:href="@{/billing}"
+         th:classappend="${activePage == 'billing'} ? 'active' : ''"
+         class="nav-link">
+        <span class="nav-icon">💰</span>
+        <span>Billing</span>
+      </a>
+    </div>
+
+    <div class="nav-section-label">Account</div>
+
+    <div class="nav-item">
+      <a th:href="@{/change-password}"
+         th:classappend="${activePage == 'password'} ? 'active' : ''"
+         class="nav-link">
+        <span class="nav-icon">🔑</span>
+        <span>Change Password</span>
+      </a>
+    </div>
+
+  </nav>
+
+  <!-- Admin info at bottom -->
+  <div class="sidebar-footer">
+    <div class="admin-info">
+      <div class="admin-avatar">A</div>
+      <div>
+        <div class="admin-name" th:text="${session.admin}">Admin</div>
+        <div class="admin-role">Administrator</div>
+      </div>
+    </div>
+  </div>
+
+</aside>
+
+</body>
+</html>

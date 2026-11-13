@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — MediCare HMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body class="login-page">
+
+  <!-- ── Left Panel ──────────────────────────────────────────── -->
+  <div class="login-left">
+    <div class="login-brand">
+      <div class="big-icon">🏥</div>
+      <h1>MediCare<br/>Management System</h1>
+      <p>Streamlining hospital operations<br/>with modern technology</p>
+    </div>
+
+    <div class="login-features">
+      <div class="login-feature-item">
+        <div class="feat-icon">👤</div>
+        <div class="feat-text">
+          <h4>Patient Management</h4>
+          <p>Complete patient records & history</p>
+        </div>
+      </div>
+      <div class="login-feature-item">
+        <div class="feat-icon">🩺</div>
+        <div class="feat-text">
+          <h4>Doctor Management</h4>
+          <p>Specializations & availability</p>
+        </div>
+      </div>
+      <div class="login-feature-item">
+        <div class="feat-icon">📅</div>
+        <div class="feat-text">
+          <h4>Appointment System</h4>
+          <p>Book & manage appointments easily</p>
+        </div>
+      </div>
+      <div class="login-feature-item">
+        <div class="feat-icon">💰</div>
+        <div class="feat-text">
+          <h4>Billing System</h4>
+          <p>Generate bills & track payments</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Right Panel: Login Form ─────────────────────────────── -->
+  <div class="login-right">
+    <div class="login-form-box">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Sign in to your admin account to continue</p>
+
+      <!-- Error Alert -->
+      <div th:if="${error}" class="alert alert-danger">
+        ⚠️ <span th:text="${error}"></span>
+      </div>
+
+      <form th:action="@{/login}" method="post">
+
+        <div class="login-form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username"
+                 class="form-control" placeholder="Enter username"
+                 required autofocus/>
+        </div>
+
+        <div class="login-form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password"
+                 class="form-control" placeholder="Enter password"
+                 required/>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-login">
+          Sign In →
+        </button>
+
+      </form>
+
+      <p style="margin-top:28px; font-size:0.78rem; color:var(--gray-500); text-align:center;">
+        Default credentials: <strong>admin</strong> / <strong>admin123</strong>
+      </p>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — MediCare HMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}"></div>
+
+<div class="main-wrapper">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2>Dashboard</h2>
+      <p>Welcome back, <span th:text="${session.admin}">Admin</span> 👋</p>
+    </div>
+    <div class="topbar-right">
+      <a th:href="@{/logout}" class="btn topbar-btn btn-danger-soft">🚪 Logout</a>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <main class="page-content">
+
+    <!-- Flash Messages -->
+    <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-icon">👤</div>
+        <div class="stat-info">
+          <div class="stat-value" th:text="${totalPatients}">0</div>
+          <div class="stat-label">Total Patients</div>
+        </div>
+      </div>
+      <div class="stat-card teal">
+        <div class="stat-icon">🩺</div>
+        <div class="stat-info">
+          <div class="stat-value" th:text="${totalDoctors}">0</div>
+          <div class="stat-label">Total Doctors</div>
+        </div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <div class="stat-value" th:text="${totalAppointments}">0</div>
+          <div class="stat-label">Appointments</div>
+        </div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <div class="stat-value" th:text="'₹' + ${#numbers.formatDecimal(pendingRevenue,1,'COMMA',0,'POINT')}">₹0</div>
+          <div class="stat-label">Pending Revenue</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header">
+        <span class="card-title">⚡ Quick Actions</span>
+      </div>
+      <div class="card-body" style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a th:href="@{/patients/add}"     class="btn btn-primary">➕ Add Patient</a>
+        <a th:href="@{/doctors/add}"      class="btn btn-success">➕ Add Doctor</a>
+        <a th:href="@{/appointments/add}" class="btn btn-outline">📅 Book Appointment</a>
+        <a th:href="@{/billing/add}"      class="btn btn-outline">💰 Generate Bill</a>
+      </div>
+    </div>
+
+    <!-- Dashboard Grid: Recent Patients + Recent Appointments -->
+    <div class="dashboard-grid">
+
+      <!-- Recent Patients -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">👤 Recent Patients</span>
+          <a th:href="@{/patients}" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Contact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${recentPatients.empty}">
+                <td colspan="5" style="text-align:center;padding:30px;color:var(--gray-500);">No patients yet</td>
+              </tr>
+              <tr th:each="p : ${recentPatients}">
+                <td class="td-muted" th:text="'#' + ${p.id}"></td>
+                <td><strong th:text="${p.name}"></strong></td>
+                <td th:text="${p.age}"></td>
+                <td>
+                  <span th:classappend="${p.gender == 'Male'} ? 'badge-primary' : 'badge-secondary'"
+                        class="badge" th:text="${p.gender}"></span>
+                </td>
+                <td class="td-muted" th:text="${p.contact}"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recent Appointments -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📅 Recent Appointments</span>
+          <a th:href="@{/appointments}" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Patient</th><th>Doctor</th><th>Date</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${recentAppointments.empty}">
+                <td colspan="4" style="text-align:center;padding:30px;color:var(--gray-500);">No appointments yet</td>
+              </tr>
+              <tr th:each="a : ${recentAppointments}">
+                <td th:text="${a.patientName}"></td>
+                <td class="td-muted" th:text="${a.doctorName}"></td>
+                <td class="td-muted" th:text="${a.apptDate}"></td>
+                <td>
+                  <span class="badge"
+                    th:classappend="${a.status == 'Completed'} ? 'badge-success' :
+                                    (${a.status == 'Cancelled'} ? 'badge-danger' : 'badge-warning')"
+                    th:text="${a.status}"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /dashboard-grid -->
+
+  </main>
+</div>
+
+</body>
+</html>

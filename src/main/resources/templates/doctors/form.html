@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Doctor Form — MediCare HMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar(activePage='doctors')}"></div>
+
+<div class="main-wrapper">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2 th:text="${doctor.id == 0} ? 'Add New Doctor' : 'Edit Doctor'">Doctor</h2>
+    </div>
+    <div class="topbar-right">
+      <a th:href="@{/doctors}" class="btn topbar-btn btn-ghost">← Back</a>
+      <a th:href="@{/logout}" class="btn topbar-btn btn-danger-soft">🚪 Logout</a>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <div class="card" style="max-width:600px;margin:0 auto;">
+      <div class="card-header">
+        <span class="card-title"
+              th:text="${doctor.id == 0} ? '➕ New Doctor' : '✏️ Edit Doctor'"></span>
+      </div>
+      <div class="card-body">
+
+        <!-- ADD -->
+        <form th:if="${doctor.id == 0}" th:action="@{/doctors/add}" method="post">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Full Name *</label>
+              <input type="text" name="name" class="form-control" placeholder="Dr. Full Name" required/>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Specialization *</label>
+              <select name="specialization" class="form-control" required>
+                <option value="">Select Specialization</option>
+                <option>Cardiology</option><option>Neurology</option>
+                <option>Orthopedics</option><option>Pediatrics</option>
+                <option>Dermatology</option><option>Oncology</option>
+                <option>Gynecology</option><option>Psychiatry</option>
+                <option>Radiology</option><option>General Medicine</option>
+                <option>ENT</option><option>Ophthalmology</option>
+                <option>Urology</option><option>Nephrology</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Contact Number</label>
+              <input type="text" name="contact" class="form-control"
+                     placeholder="10-digit mobile" maxlength="10"/>
+            </div>
+          </div>
+          <div style="margin-top:24px;display:flex;gap:12px;">
+            <button type="submit" class="btn btn-primary">✅ Add Doctor</button>
+            <a th:href="@{/doctors}" class="btn btn-outline">Cancel</a>
+          </div>
+        </form>
+
+        <!-- EDIT -->
+        <form th:if="${doctor.id != 0}" th:action="@{/doctors/edit/{id}(id=${doctor.id})}" method="post">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Full Name *</label>
+              <input type="text" name="name" class="form-control" th:value="${doctor.name}" required/>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Specialization *</label>
+              <select name="specialization" class="form-control" required>
+                <option th:each="s : ${ {'Cardiology','Neurology','Orthopedics','Pediatrics','Dermatology','Oncology','Gynecology','Psychiatry','Radiology','General Medicine','ENT','Ophthalmology','Urology','Nephrology'} }"
+                        th:value="${s}" th:text="${s}"
+                        th:selected="${s == doctor.specialization}"></option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact</label>
+              <input type="text" name="contact" class="form-control" th:value="${doctor.contact}"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Available?</label>
+              <select name="available" class="form-control">
+                <option value="true"  th:selected="${doctor.available}">Yes – Available</option>
+                <option value="false" th:selected="${!doctor.available}">No – Unavailable</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:24px;display:flex;gap:12px;">
+            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+            <a th:href="@{/doctors}" class="btn btn-outline">Cancel</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
